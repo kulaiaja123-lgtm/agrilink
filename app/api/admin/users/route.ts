@@ -1,11 +1,13 @@
+// app/api/admin/users/route.ts
 import { NextResponse } from 'next/server';
-import db from '@/lib/database.js';
+import { userData } from '@/lib/data-static';
 
 export async function GET() {
   try {
-    const users = db.prepare('SELECT id, name, email, role, created_at FROM users ORDER BY id').all();
+    const users = userData.map(({ password, ...rest }) => rest);
     return NextResponse.json({ success: true, data: users });
-  } catch (error) {
-    return NextResponse.json({ success: false, error: error.message });
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan';
+    return NextResponse.json({ success: false, error: errorMessage });
   }
 }
