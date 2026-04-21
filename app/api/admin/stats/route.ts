@@ -13,7 +13,6 @@ export async function GET() {
     
     return NextResponse.json({ success: true, data: stats });
   } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan';
-    return NextResponse.json({ success: false, error: errorMessage });
+    return NextResponse.json({ success: false, error: 'Gagal mengambil statistik' });
   }
 }

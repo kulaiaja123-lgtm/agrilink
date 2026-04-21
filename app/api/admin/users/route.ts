@@ -7,7 +7,6 @@ export async function GET() {
     const users = userData.map(({ password, ...rest }) => rest);
     return NextResponse.json({ success: true, data: users });
   } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan';
-    return NextResponse.json({ success: false, error: errorMessage });
+    return NextResponse.json({ success: false, error: 'Gagal mengambil data user' });
   }
 }

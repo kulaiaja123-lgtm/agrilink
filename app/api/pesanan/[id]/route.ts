@@ -1,6 +1,7 @@
 // app/api/pesanan/[id]/route.ts
 import { NextResponse } from 'next/server';
-import db from '@/lib/database.js';
+
+let pesananData: any[] = [];
 
 export async function PUT(
   request: Request,
@@ -10,13 +11,15 @@ export async function PUT(
     const { id } = await context.params;
     const { status } = await request.json();
     
-    db.prepare(`
-      UPDATE pesanan SET status = ?, updated_at = CURRENT_TIMESTAMP
-      WHERE id = ?
-    `).run(status, id);
+    const index = pesananData.findIndex(p => p.id === parseInt(id));
+    
+    if (index !== -1) {
+      pesananData[index].status = status;
+      pesananData[index].updated_at = new Date().toISOString();
+    }
     
     return NextResponse.json({ success: true, message: 'Status pesanan diperbarui' });
   } catch (error) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'Gagal update status' }, { status: 500 });
   }
 }

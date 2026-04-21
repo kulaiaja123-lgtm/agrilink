@@ -10,10 +10,9 @@ export const pupukData = [
 ];
 
 export const artikelData = [
-  { id: 1, title: 'Panduan Lengkap Budidaya Padi', slug: 'panduan-budidaya-padi', category: 'Padi', excerpt: 'Panduan lengkap menanam padi dari persiapan lahan hingga panen.', content: '# Panduan Budidaya Padi\n\n## Persiapan Lahan\n...', author: 'Tim AgriLink', views: 150, created_at: new Date().toISOString() },
-  { id: 2, title: 'Mengenal Hama Walang Sangit', slug: 'hama-walang-sangit', category: 'Hama', excerpt: 'Kenali ciri-ciri walang sangit dan cara efektif memberantasnya.', content: '# Hama Walang Sangit\n\n## Ciri-ciri Serangan\n...', author: 'Tim AgriLink', views: 120, created_at: new Date().toISOString() },
-  { id: 3, title: 'Panduan Pemupukan Jagung', slug: 'pemupukan-jagung', category: 'Jagung', excerpt: 'Dosis dan waktu pemupukan jagung untuk hasil maksimal.', content: '# Pemupukan Jagung\n\n## Kebutuhan Pupuk\n...', author: 'Tim AgriLink', views: 98, created_at: new Date().toISOString() },
-  { id: 4, title: 'Mengatasi Cabai Layu', slug: 'atasi-cabai-layu', category: 'Cabai', excerpt: 'Penyebab dan solusi tanaman cabai yang layu.', content: '# Cabai Layu\n\n## Penyebab\n...', author: 'Tim AgriLink', views: 85, created_at: new Date().toISOString() },
+  { id: 1, title: 'Panduan Lengkap Budidaya Padi', slug: 'panduan-budidaya-padi', category: 'Padi', excerpt: 'Panduan lengkap menanam padi...', content: 'Konten artikel...', author: 'Tim AgriLink', views: 150, created_at: new Date().toISOString() },
+  { id: 2, title: 'Mengenal Hama Walang Sangit', slug: 'hama-walang-sangit', category: 'Hama', excerpt: 'Kenali ciri-ciri walang sangit...', content: 'Konten artikel...', author: 'Tim AgriLink', views: 120, created_at: new Date().toISOString() },
+  { id: 3, title: 'Panduan Pemupukan Jagung', slug: 'pemupukan-jagung', category: 'Jagung', excerpt: 'Dosis dan waktu pemupukan jagung...', content: 'Konten artikel...', author: 'Tim AgriLink', views: 98, created_at: new Date().toISOString() },
 ];
 
 export const userData = [

@@ -14,8 +14,7 @@ export async function POST(request: Request) {
     
     return NextResponse.json({ success: true, data: newPupuk });
   } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan';
-    return NextResponse.json({ success: false, error: errorMessage });
+    return NextResponse.json({ success: false, error: 'Gagal menambah pupuk' });
   }
 }
 
@@ -24,11 +23,10 @@ export async function DELETE(request: Request) {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
     
-    pupukList = pupukList.filter(p => p.id !== parseInt(id!));
+    pupukList = pupukList.filter(p => p.id !== parseInt(id || '0'));
     
     return NextResponse.json({ success: true });
   } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan';
-    return NextResponse.json({ success: false, error: errorMessage });
+    return NextResponse.json({ success: false, error: 'Gagal menghapus pupuk' });
   }
 }
