@@ -1,0 +1,55 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("PETANI")
+  createdAt DateTime @default(now())
+}
+
+model Pupuk {
+  id        Int    @id @default(autoincrement())
+  nama      String @unique
+  icon      String
+  warna     String
+  kandungan String
+  dosisPadi Int
+  dosisJagung Int
+  dosisCabai Int
+  dosisKedelai Int
+  manfaat   String
+  caraAplikasi String
+  waktuAplikasi String
+  harga     Int
+}
+
+model Stok {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  pupukId   Int
+  jumlah    Int
+  harga     Int
+  lokasi    String
+  createdAt DateTime @default(now())
+}
+
+model Transaksi {
+  id         Int      @id @default(autoincrement())
+  petaniId   Int
+  penjualId  Int
+  pupukId    Int
+  jumlah     Int
+  totalHarga Int
+  status     String   @default("MENUNGGU")
+  createdAt  DateTime @default(now())
+}
