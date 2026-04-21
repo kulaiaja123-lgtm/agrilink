@@ -4,9 +4,9 @@ import { artikelData } from '@/lib/data-static';
 
 export async function GET(
   request: Request,
-  { params }: { params: { slug: string } }
+  context: { params: Promise<{ slug: string }> }
 ) {
-  const slug = params.slug;
+  const { slug } = await context.params;
   const artikel = artikelData.find(a => a.slug === slug);
   
   if (!artikel) {
