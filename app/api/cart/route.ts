@@ -1,52 +1,52 @@
 // app/api/cart/route.ts
 import { NextResponse } from 'next/server';
-import db from '@/lib/database.js';
 
-// GET - Ambil keranjang user
+// Data keranjang sementara (in-memory untuk demo)
+let cartData: any[] = [];
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
     
-    console.log('GET cart - userId:', userId);
-    
     if (!userId) {
       return NextResponse.json({ success: false, error: 'User ID diperlukan', data: [] }, { status: 400 });
     }
     
-    const cart = db.prepare(`
-      SELECT c.id, c.jumlah, p.id as pupuk_id, p.nama, p.icon, p.harga, p.warna
-      FROM cart c
-      JOIN pupuk p ON c.pupuk_id = p.id
-      WHERE c.user_id = ?
-    `).all(userId);
+    const userCart = cartData.filter(item => item.user_id === parseInt(userId));
     
-    console.log('Cart items found:', cart.length);
+    const total = userCart.reduce((sum: number, item: any) => sum + (item.jumlah * item.harga), 0);
     
-    const total = cart.reduce((sum, item) => sum + (item.jumlah * item.harga), 0);
-    
-    return NextResponse.json({ success: true, data: cart, total: total });
+    return NextResponse.json({ success: true, data: userCart, total: total });
   } catch (error) {
     console.error('GET cart error:', error);
-    return NextResponse.json({ success: false, error: error.message, data: [] }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'Gagal mengambil keranjang', data: [] }, { status: 500 });
   }
 }
-// POST - Tambah ke keranjang
+
 export async function POST(request: Request) {
   try {
-    const { userId, pupukId, jumlah } = await request.json();
+    const { userId, pupukId, jumlah, nama, harga, icon } = await request.json();
     
     if (!userId || !pupukId || !jumlah) {
       return NextResponse.json({ success: false, error: 'Data tidak lengkap' }, { status: 400 });
     }
     
     // Cek apakah sudah ada di keranjang
-    const existing = db.prepare('SELECT id, jumlah FROM cart WHERE user_id = ? AND pupuk_id = ?').get(userId, pupukId);
+    const existingIndex = cartData.findIndex(item => item.user_id === userId && item.pupuk_id === pupukId);
     
-    if (existing) {
-      db.prepare('UPDATE cart SET jumlah = jumlah + ? WHERE id = ?').run(jumlah, existing.id);
+    if (existingIndex !== -1) {
+      cartData[existingIndex].jumlah += jumlah;
     } else {
-      db.prepare('INSERT INTO cart (user_id, pupuk_id, jumlah) VALUES (?, ?, ?)').run(userId, pupukId, jumlah);
+      cartData.push({
+        id: Date.now(),
+        user_id: userId,
+        pupuk_id: pupukId,
+        nama: nama || 'Pupuk',
+        icon: icon || '🌿',
+        harga: harga || 0,
+        jumlah: jumlah
+      });
     }
     
     return NextResponse.json({ success: true, message: 'Berhasil ditambahkan ke keranjang' });
@@ -56,7 +56,6 @@ export async function POST(request: Request) {
   }
 }
 
-// DELETE - Hapus dari keranjang
 export async function DELETE(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -66,7 +65,7 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ success: false, error: 'ID diperlukan' }, { status: 400 });
     }
     
-    db.prepare('DELETE FROM cart WHERE id = ?').run(cartId);
+    cartData = cartData.filter(item => item.id !== parseInt(cartId));
     
     return NextResponse.json({ success: true, message: 'Berhasil dihapus dari keranjang' });
   } catch (error) {
@@ -75,7 +74,6 @@ export async function DELETE(request: Request) {
   }
 }
 
-// PUT - Update jumlah
 export async function PUT(request: Request) {
   try {
     const { cartId, jumlah } = await request.json();
@@ -84,10 +82,14 @@ export async function PUT(request: Request) {
       return NextResponse.json({ success: false, error: 'Data tidak lengkap' }, { status: 400 });
     }
     
-    if (jumlah <= 0) {
-      db.prepare('DELETE FROM cart WHERE id = ?').run(cartId);
-    } else {
-      db.prepare('UPDATE cart SET jumlah = ? WHERE id = ?').run(jumlah, cartId);
+    const index = cartData.findIndex(item => item.id === cartId);
+    
+    if (index !== -1) {
+      if (jumlah <= 0) {
+        cartData.splice(index, 1);
+      } else {
+        cartData[index].jumlah = jumlah;
+      }
     }
     
     return NextResponse.json({ success: true, message: 'Jumlah diperbarui' });
