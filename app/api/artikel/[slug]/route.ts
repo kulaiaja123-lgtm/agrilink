@@ -6,7 +6,8 @@ export async function GET(
   request: Request,
   { params }: { params: { slug: string } }
 ) {
-  const artikel = artikelData.find(a => a.slug === params.slug);
+  const slug = params.slug;
+  const artikel = artikelData.find(a => a.slug === slug);
   
   if (!artikel) {
     return NextResponse.json(
